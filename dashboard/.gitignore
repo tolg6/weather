@@ -52,7 +52,6 @@ coverage.xml
 .ipynb_checkpoints
 
 # Environments
-.env
 .venv
 env/
 ENV/
