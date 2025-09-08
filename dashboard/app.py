@@ -101,6 +101,7 @@ def load_weather_data():
         SELECT timestamp, temperature, humidity, pressure, wind_speed, 
                wind_direction, beaufort, direction_code 
         FROM public.weather_data_0001 
+        where id = %s
         ORDER BY timestamp
         """
         
