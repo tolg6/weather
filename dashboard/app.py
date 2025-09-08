@@ -101,8 +101,7 @@ def load_weather_data():
         SELECT timestamp, temperature, humidity, pressure, wind_speed, 
                wind_direction, beaufort, direction_code 
         FROM public.weather_data_0001 
-        WHERE id = %s
-        ORDER BY timestamp DESC
+        ORDER BY timestamp
         """
         
         df = pd.read_sql(query, conn, params=[st.session_state.device_id])
