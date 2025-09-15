@@ -402,14 +402,14 @@ def main():
                 fig_pred.add_trace(go.Scatter(
                     x=display_df['timestamp'], 
                     y=display_df['temperature'], 
-                    mode='lines+markers', 
+                    mode='lines', 
                     name='Gerçek Sıcaklık',
                     line=dict(color='#FF6B6B', width=3)
                 ))
                 fig_pred.add_trace(go.Scatter(
                     x=predicted_df['timestamp'], 
                     y=predicted_df['temp_prediction'], 
-                    mode='lines+markers', 
+                    mode='lines', 
                     name='Tahmin Edilen Sıcaklık',
                     line=dict(color='#1E90FF', width=3, dash='dash')
                 ))
