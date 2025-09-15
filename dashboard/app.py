@@ -394,26 +394,34 @@ def main():
                 )
                 st.plotly_chart(fig_humidity, use_container_width=True)
 
-        # Predicted Temperature and Actual Temperature
-        if not display_df.empty and 'timestamp' in display_df.columns and 'temperature' in display_df.columns:
+        # Predicted Temperature and Actual Temperature Comparison without merging
+        if 'timestamp' in display_df.columns and 'temperature' in display_df.columns:
             predicted_df = load_predicted_data()
             if not predicted_df.empty:
-                merged_df = pd.merge(display_df, predicted_df, on='timestamp', how='left')
-                fig_pred = px.line(
-                    merged_df, 
-                    x='timestamp', 
-                    y=['temperature', 'temp_prediction'],
-                    title='Gerçek ve Tahmini Sıcaklık',
-                    labels={'value': 'Sıcaklık (°C)', 'timestamp': 'Zaman', 'variable': 'Tür'}
-                )
-                fig_pred.update_traces(line_width=3)
+                fig_pred = go.Figure()
+                fig_pred.add_trace(go.Scatter(
+                    x=display_df['timestamp'], 
+                    y=display_df['temperature'], 
+                    mode='lines+markers', 
+                    name='Gerçek Sıcaklık',
+                    line=dict(color='#FF6B6B', width=3)
+                ))
+                fig_pred.add_trace(go.Scatter(
+                    x=predicted_df['timestamp'], 
+                    y=predicted_df['temp_prediction'], 
+                    mode='lines+markers', 
+                    name='Tahmin Edilen Sıcaklık',
+                    line=dict(color='#1E90FF', width=3, dash='dash')
+                ))
                 fig_pred.update_layout(
+                    title='Gerçek ve Tahmin Edilen Sıcaklık Karşılaştırması',
+                    xaxis_title='Zaman',
+                    yaxis_title='Sıcaklık (°C)',
                     plot_bgcolor='rgba(0,0,0,0)',
                     paper_bgcolor='rgba(0,0,0,0)',
                     font=dict(size=12)
                 )
                 st.plotly_chart(fig_pred, use_container_width=True)
-
         
         # Basınç ve Rüzgar Hızı
         col1, col2 = st.columns(2)
