@@ -411,7 +411,7 @@ def main():
                     y=predicted_df['temp_prediction'], 
                     mode='lines', 
                     name='Tahmin Edilen Sıcaklık',
-                    line=dict(color='#1E90FF', width=3, dash='dash')
+                    line=dict(color='#1E90FF', width=3)
                 ))
                 fig_pred.update_layout(
                     title='Gerçek ve Tahmin Edilen Sıcaklık Karşılaştırması',
