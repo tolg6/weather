@@ -94,6 +94,32 @@ def logout():
     st.session_state.device_id = None
     st.rerun()
 
+
+# Load Predicted Data
+def load_predicted_data():
+    conn = get_db_connection()
+    if conn is None:
+        st.error("Veritabanı bağlantısı kurulamadı")
+        return pd.DataFrame()
+    
+    try:
+        query = """
+        SELECT timestamp, temp_prediction 
+        FROM public.predictions 
+        where id = %s
+        ORDER BY timestamp
+        """
+        
+        df = pd.read_sql(query, conn, params=[st.session_state.device_id])
+        conn.close()
+        return df
+        
+    except Exception as e:
+        st.error(f"Veri yükleme hatası: {e}")
+        if conn:
+            conn.close()
+        return pd.DataFrame()
+
 def load_weather_data():
     conn = get_db_connection()
     if conn is None:
@@ -367,6 +393,27 @@ def main():
                     font=dict(size=12)
                 )
                 st.plotly_chart(fig_humidity, use_container_width=True)
+
+        # Predicted Temperature and Actual Temperature
+        if not display_df.empty and 'timestamp' in display_df.columns and 'temperature' in display_df.columns:
+            predicted_df = load_predicted_data()
+            if not predicted_df.empty:
+                merged_df = pd.merge(display_df, predicted_df, on='timestamp', how='left')
+                fig_pred = px.line(
+                    merged_df, 
+                    x='timestamp', 
+                    y=['temperature', 'temp_prediction'],
+                    title='Gerçek ve Tahmini Sıcaklık',
+                    labels={'value': 'Sıcaklık (°C)', 'timestamp': 'Zaman', 'variable': 'Tür'}
+                )
+                fig_pred.update_traces(line_width=3)
+                fig_pred.update_layout(
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font=dict(size=12)
+                )
+                st.plotly_chart(fig_pred, use_container_width=True)
+                
         
         # Basınç ve Rüzgar Hızı
         col1, col2 = st.columns(2)
