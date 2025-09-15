@@ -106,7 +106,7 @@ def load_predicted_data():
         query = """
         SELECT timestamp, temp_prediction 
         FROM public.predictions 
-        where id = %s
+        where device_id = %s
         ORDER BY timestamp
         """
         
@@ -413,7 +413,7 @@ def main():
                     font=dict(size=12)
                 )
                 st.plotly_chart(fig_pred, use_container_width=True)
-                
+
         
         # Basınç ve Rüzgar Hızı
         col1, col2 = st.columns(2)
