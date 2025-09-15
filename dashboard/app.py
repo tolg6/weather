@@ -137,6 +137,8 @@ def load_weather_data():
         """
         
         df = pd.read_sql(query, conn, params=[st.session_state.device_id])
+        ## add 3 hour to timestamp for timezone correction
+        df['timestamp'] = pd.to_datetime(df['timestamp']) + pd.Timedelta(hours=3)
         conn.close()
         return df
         
