@@ -414,7 +414,7 @@ def main():
                         x=model_data['timestamp'], 
                         y=model_data['temp_prediction'], 
                         mode='lines+markers', 
-                        name=f'Tahmin Edilen Sıcaklık ({model_name})',
+                        name=f'Model : ({model_name})',
                         line=dict(width=2),
                         marker=dict(size=6)
                     ))
