@@ -104,7 +104,7 @@ def load_predicted_data():
     
     try:
         query = """
-        SELECT timestamp, temp_prediction 
+        SELECT model,forecast_datetime as timestamp, predicted_temperature as temp_prediction 
         FROM public.predictions 
         where device_id = %s
         ORDER BY timestamp
@@ -396,25 +396,28 @@ def main():
                 )
                 st.plotly_chart(fig_humidity, use_container_width=True)
 
-        # Predicted Temperature and Actual Temperature Comparison without merging
+        # Predicted Temperature and Actual Temperature Comparison without merging and add other models
+        st.markdown("### 🤖 Tahmin Edilen Sıcaklık vs Gerçek Sıcaklık")
         if 'timestamp' in display_df.columns and 'temperature' in display_df.columns:
             predicted_df = load_predicted_data()
             if not predicted_df.empty:
                 fig_pred = go.Figure()
                 fig_pred.add_trace(go.Scatter(
                     x=display_df['timestamp'], 
-                    y=display_df['temperature'], 
+                    y=display_df['temperature'],
                     mode='lines', 
                     name='Gerçek Sıcaklık',
                     line=dict(color='#FF6B6B', width=3)
-                ))
-                fig_pred.add_trace(go.Scatter(
-                    x=predicted_df['timestamp'], 
-                    y=predicted_df['temp_prediction'], 
-                    mode='lines', 
-                    name='Tahmin Edilen Sıcaklık',
-                    line=dict(color='#1E90FF', width=3)
-                ))
+                )) # group by model and plot each model
+                for model_name, model_data in predicted_df.groupby('model'):
+                    fig_pred.add_trace(go.Scatter(
+                        x=model_data['timestamp'], 
+                        y=model_data['temp_prediction'], 
+                        mode='lines+markers', 
+                        name=f'Tahmin Edilen Sıcaklık ({model_name})',
+                        line=dict(width=2),
+                        marker=dict(size=6)
+                    ))
                 fig_pred.update_layout(
                     title='Gerçek ve Tahmin Edilen Sıcaklık Karşılaştırması',
                     xaxis_title='Zaman',
