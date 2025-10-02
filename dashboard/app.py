@@ -413,7 +413,7 @@ def main():
                     fig_pred.add_trace(go.Scatter(
                         x=model_data['timestamp'], 
                         y=model_data['temp_prediction'], 
-                        mode='lines+markers', 
+                        mode='lines', 
                         name=f'Model : ({model_name})',
                         line=dict(width=2),
                         marker=dict(size=6)
