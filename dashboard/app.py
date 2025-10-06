@@ -14,12 +14,6 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent))  # <-- EKLENDİ
 
 # Tahmin analizi modülünü import et
-try:
-    from dashboard.pages.prediction_analysis import show_prediction_analysis
-except ImportError:
-    def show_prediction_analysis():
-        st.error("⚠️ prediction_analysis.py dosyası bulunamadı! Lütfen dosyanın aynı klasörde olduğundan emin olun.")
-
 
 ### DB Connection ###
 load_dotenv()
