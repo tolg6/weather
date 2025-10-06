@@ -10,6 +10,13 @@ from plotly.subplots import make_subplots
 import numpy as np
 from datetime import datetime, timedelta
 
+# Tahmin analizi modülünü import et
+try:
+    from prediction_analysis import show_prediction_analysis
+except ImportError:
+    def show_prediction_analysis():
+        st.error("⚠️ prediction_analysis.py dosyası bulunamadı! Lütfen dosyanın aynı klasörde olduğundan emin olun.")
+
 
 ### DB Connection ###
 load_dotenv()
@@ -263,16 +270,16 @@ def main():
         show_login_page()
         st.stop()
     
-    # Ana başlık
-    st.markdown(f"""
-    <div class="main-header">
-        <h1 style="margin: 0;">🌤️ Hava Durumu Dashboard</h1>
-        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Hoş Geldiniz, {st.session_state.username}</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Yan panel ve çıkış butonu
+    # Yan panel - Sayfa seçimi ve kontroller
     with st.sidebar:
+        st.header("📑 Navigasyon")
+        page = st.radio(
+            "Sayfa Seçin:",
+            ["🏠 Ana Sayfa", "🤖 Tahmin Analizi"],
+            index=0
+        )
+        
+        st.markdown("---")
         st.header("⚙️ Kontrol Paneli")
         st.write(f"**Aktif Cihaz:** {st.session_state.device_id}")
         
@@ -281,7 +288,23 @@ def main():
             logout()
         
         st.markdown("---")
-        
+    
+    # Sayfa yönlendirmesi
+    if page == "🤖 Tahmin Analizi":
+        show_prediction_analysis()
+        return
+    
+    # Ana Sayfa devam ediyor
+    # Ana başlık
+    st.markdown(f"""
+    <div class="main-header">
+        <h1 style="margin: 0;">🌤️ Hava Durumu Dashboard</h1>
+        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Hoş Geldiniz, {st.session_state.username}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Sidebar devam - Ana sayfa kontrolleri
+    with st.sidebar:
         # Veri türü seçimi
         show_hourly = st.checkbox("Saatlik Ortalama Göster", value=True)
         

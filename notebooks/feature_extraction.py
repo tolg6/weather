@@ -13,7 +13,7 @@ def feature_engineering(data: pd.DataFrame, future_data: pd.DataFrame, resample_
     
     # Convert timestamp to datetime and adjust timezone if needed
     data['timestamp'] = pd.to_datetime(data['timestamp']) + pd.Timedelta(hours=3)
-    future_data['timestamp'] = pd.to_datetime(future_data['timestamp'])
+    future_data['timestamp'] = pd.to_datetime(future_data['timestamp']) + pd.Timedelta(hours=3)
     
     # Sort by timestamp
     data = data.sort_values("timestamp").reset_index(drop=True)
@@ -93,7 +93,7 @@ def add_advanced_features_with_lags(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def generate_features(df: pd.DataFrame, rolling_windows=[3,6], lags=[1,12,24]) -> pd.DataFrame:
+def generate_features(df: pd.DataFrame, rolling_windows=[3,6], lags=[1,2,3,6,12,24]) -> pd.DataFrame:
     """
     Feature engineering pipeline:
     - Wind components
@@ -106,9 +106,14 @@ def generate_features(df: pd.DataFrame, rolling_windows=[3,6], lags=[1,12,24]) -
     """
     data = df.copy()
     data = data.sort_values("timestamp").reset_index(drop=True)
+
+
+    # ===== Interaction terms =====
+    data["temp_dewpoint_interaction"] = data["temperature"] * data["dewpoint_dep"]
+    data["wind_solar_interaction"] = data["wind_speed"] * data["solar_radiation"]
     
     # ===== Delta features (differences) =====
-    delta_cols = ["temperature", "humidity", "pressure", "wind_speed", "solar_radiation"]
+    delta_cols = ["temperature", "humidity", "pressure", "wind_speed", "solar_radiation","temp_dewpoint_interaction","wind_solar_interaction","dew_point","dewpoint_dep"]
     for col in delta_cols:
         for l in lags:
             data[f"delta_{col}_{l}h"] = data[col] - data[col].shift(l)
@@ -125,9 +130,6 @@ def generate_features(df: pd.DataFrame, rolling_windows=[3,6], lags=[1,12,24]) -
             data[f"{col}_rollmean_{w}h"] = data[col].rolling(window=w, min_periods=1).mean()
             data[f"{col}_rollstd_{w}h"] = data[col].rolling(window=w, min_periods=1).std().fillna(0)
 
-    # ===== Interaction terms =====
-    data["temp_dewpoint_interaction"] = data["temperature"] * data["dewpoint_dep"]
-    data["wind_solar_interaction"] = data["wind_speed"] * data["solar_radiation"]
 
     # ===== Wind direction categories (8 bins) =====
     #bins = [0, 45, 90, 135, 180, 225, 270, 315, 360]
