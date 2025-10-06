@@ -9,6 +9,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 from datetime import datetime, timedelta
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent))  # <-- EKLENDİ
 
 # Tahmin analizi modülünü import et
 try:
