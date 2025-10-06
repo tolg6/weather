@@ -14,6 +14,12 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent))  # <-- EKLENDİ
 
 # Tahmin analizi modülünü import et
+try:
+    from dashboard.pages.prediction_analysis import show_prediction_analysis
+except ImportError:
+    def show_prediction_analysis():
+        st.error("⚠️ prediction_analysis.py dosyası bulunamadı! Lütfen dosyanın aynı klasörde olduğundan emin olun.")
+
 
 ### DB Connection ###
 load_dotenv()
@@ -270,12 +276,7 @@ def main():
     # Yan panel - Sayfa seçimi ve kontroller
     with st.sidebar:
         st.header("📑 Navigasyon")
-        page = st.radio(
-            "Sayfa Seçin:",
-            ["🏠 Ana Sayfa", "🤖 Tahmin Analizi"],
-            index=0
-        )
-        
+
         st.markdown("---")
         st.header("⚙️ Kontrol Paneli")
         st.write(f"**Aktif Cihaz:** {st.session_state.device_id}")
@@ -287,9 +288,7 @@ def main():
         st.markdown("---")
     
     # Sayfa yönlendirmesi
-    if page == "🤖 Tahmin Analizi":
-        show_prediction_analysis()
-        return
+
     
     # Ana Sayfa devam ediyor
     # Ana başlık
