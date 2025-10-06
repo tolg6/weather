@@ -9,7 +9,6 @@ import utils.db_connector
 from dotenv import load_dotenv
 import os
 
-import tetete
 ### DB Connection ###
 load_dotenv()
 DB_CONFIG = {
