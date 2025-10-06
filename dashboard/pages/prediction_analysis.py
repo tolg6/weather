@@ -8,7 +8,6 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import utils.db_connector
 from dotenv import load_dotenv
 import os
-import statsmodels
 
 ### DB Connection ###
 load_dotenv()
