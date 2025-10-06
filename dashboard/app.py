@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 # Tahmin analizi modülünü import et
 try:
-    from prediction_analysis import show_prediction_analysis
+    from dashboard.pages.prediction_analysis import show_prediction_analysis
 except ImportError:
     def show_prediction_analysis():
         st.error("⚠️ prediction_analysis.py dosyası bulunamadı! Lütfen dosyanın aynı klasörde olduğundan emin olun.")
