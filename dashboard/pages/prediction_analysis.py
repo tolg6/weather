@@ -36,7 +36,7 @@ def load_predicted_data(device_id):
         ORDER BY timestamp
         """
         df = pd.read_sql(query, conn, params=[device_id])
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = pd.to_datetime(df['timestamp']).dt.tz_localize(None)
         conn.close()
         return df
     except Exception as e:
