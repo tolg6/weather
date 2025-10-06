@@ -53,13 +53,14 @@ def load_weather_data(device_id):
     
     try:
         query = """
-        SELECT timestamp, temperature, humidity, pressure, wind_speed
+        SELECT timestamp, temperature
         FROM public.weather_data_0001 
         WHERE id = %s
         ORDER BY timestamp
         """
         df = pd.read_sql(query, conn, params=[device_id])
         df['timestamp'] = pd.to_datetime(df['timestamp']) + pd.Timedelta(hours=3)
+        df.set_index('timestamp').resample("H").mean().reset_index()
         conn.close()
         return df
     except Exception as e:
